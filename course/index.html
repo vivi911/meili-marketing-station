@@ -1,0 +1,1690 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="美力行銷 Codex 小白上機互動簡報試讀版">
+  <title>把行銷工作交給 Codex｜互動試讀</title>
+  <style>
+    :root {
+      --paper: #f6f0e2;
+      --paper-2: #fffdf7;
+      --ink: #3f3c36;
+      --muted: #777169;
+      --mustard: #d6a62a;
+      --mustard-deep: #a97817;
+      --sage: #dfe9d8;
+      --sage-deep: #6f836c;
+      --green-deep: #233d1f;
+      --line: #4b4944;
+      --shadow: 0 22px 60px rgba(69, 58, 36, .16);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 18% 12%, rgba(214,166,42,.10), transparent 28%),
+        radial-gradient(circle at 86% 82%, rgba(111,131,108,.10), transparent 30%),
+        var(--paper);
+      font-family: "HanziPen TC", "Hannotate TC", "PingFang TC", system-ui, sans-serif;
+      overflow-x: hidden;
+    }
+
+    body.lecture-mode { overflow: hidden; }
+
+    button { font: inherit; }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    body.lecture-mode .app-shell {
+      height: 100dvh;
+      min-height: 0;
+      display: block;
+    }
+
+    .topbar {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: 18px 28px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    body.lecture-mode .topbar {
+      position: fixed;
+      z-index: 20;
+      inset: 0 0 auto 0;
+      width: 100%;
+      padding: 13px 22px;
+      pointer-events: none;
+      background: linear-gradient(to bottom, rgba(246,240,226,.94), rgba(246,240,226,0));
+    }
+
+    body.lecture-mode .brand,
+    body.lecture-mode .progress-wrap {
+      transform: scale(.88);
+      transform-origin: center left;
+      opacity: .78;
+    }
+
+    body.lecture-mode .progress-wrap { transform-origin: center right; }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--mustard-deep);
+      box-shadow: 3px 4px 0 rgba(75,73,68,.18);
+    }
+
+    .progress-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .progress-track {
+      width: min(28vw, 310px);
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(75,73,68,.12);
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 33.333%;
+      border-radius: inherit;
+      background: var(--mustard);
+      transition: width .35s ease;
+    }
+
+    main {
+      width: min(1500px, 100%);
+      min-width: 0;
+      margin: 0 auto;
+      padding: 6px 28px 20px;
+      display: grid;
+      align-items: center;
+    }
+
+    body.lecture-mode main {
+      width: 100%;
+      height: 100dvh;
+      padding: 0;
+      display: block;
+    }
+
+    .screen {
+      display: none;
+      min-width: 0;
+      animation: enter .35s ease both;
+    }
+
+    .screen.active { display: block; }
+
+    body.lecture-mode .screen.active {
+      width: 100%;
+      height: 100%;
+    }
+
+    @keyframes enter {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-stage {
+      max-width: 1360px;
+      margin: 0 auto;
+      background: var(--paper-2);
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+
+    .slide-screen .slide-stage {
+      overflow: hidden;
+      padding: 0;
+      border-radius: 24px;
+    }
+
+    body.lecture-mode .slide-stage {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      margin: 0;
+      padding: clamp(8px, 1.1vw, 18px);
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .slide-stage img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+      display: block;
+      border-radius: 20px;
+    }
+
+    body.lecture-mode .slide-stage img {
+      width: auto;
+      height: auto;
+      max-width: calc(100vw - clamp(16px, 2.2vw, 36px));
+      max-height: calc(100dvh - clamp(16px, 2.2vw, 36px));
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+      border-radius: clamp(4px, .6vw, 10px);
+      box-shadow: 0 14px 45px rgba(69, 58, 36, .18);
+    }
+
+    .chapter-note {
+      max-width: 1360px;
+      margin: 12px auto 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .slide-screen .chapter-note { display: none; }
+
+    body.lecture-mode .chapter-note {
+      position: fixed;
+      z-index: 18;
+      left: 50%;
+      bottom: 14px;
+      width: auto;
+      max-width: calc(100vw - 360px);
+      margin: 0;
+      padding: 7px 14px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      color: rgba(63,60,54,.76);
+      background: rgba(255,253,247,.88);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 5px 18px rgba(69,58,36,.10);
+      font-size: .84rem;
+      white-space: nowrap;
+    }
+
+    body.lecture-mode .chapter-note span:last-child { display: none; }
+
+    .thought-card {
+      max-width: 1360px;
+      margin: 0 auto;
+      min-height: min(760px, calc(100vh - 160px));
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1.04fr .96fr;
+      background: var(--paper-2);
+      border: 2px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .scene {
+      position: relative;
+      min-height: 590px;
+      background: #ece3cf;
+      overflow: hidden;
+    }
+
+    .scene img {
+      width: 100%;
+      height: 100%;
+      min-height: 590px;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+    }
+
+    .speech {
+      position: absolute;
+      top: 28px;
+      right: 28px;
+      width: min(330px, 48%);
+      padding: 18px 20px;
+      border: 2px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255,253,247,.96);
+      box-shadow: 6px 7px 0 rgba(75,73,68,.12);
+      font-size: clamp(1.05rem, 1.7vw, 1.5rem);
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .speech::after {
+      content: "";
+      position: absolute;
+      right: 58px;
+      bottom: -18px;
+      width: 28px;
+      height: 28px;
+      background: var(--paper-2);
+      border-right: 2px solid var(--line);
+      border-bottom: 2px solid var(--line);
+      transform: rotate(45deg);
+    }
+
+    .interaction {
+      padding: clamp(34px, 5vw, 72px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--mustard-deep);
+      font-size: .95rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 720px;
+      color: #282722;
+      font-size: clamp(2rem, 4vw, 4.1rem);
+      line-height: 1.08;
+      letter-spacing: -.03em;
+    }
+
+    .lead {
+      margin: 18px 0 24px;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+      line-height: 1.65;
+    }
+
+    .choices {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .choice {
+      min-height: 66px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1.5px solid rgba(75,73,68,.28);
+      border-radius: 15px;
+      color: var(--ink);
+      background: #fffdf8;
+      cursor: pointer;
+      text-align: left;
+      font-size: 1rem;
+      font-weight: 750;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .choice:hover,
+    .choice:focus-visible {
+      transform: translateY(-2px);
+      border-color: var(--mustard-deep);
+      outline: none;
+    }
+
+    .choice.selected {
+      border-color: var(--sage-deep);
+      background: var(--sage);
+      box-shadow: inset 0 0 0 1px var(--sage-deep);
+    }
+
+    .choice-icon {
+      flex: 0 0 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(214,166,42,.16);
+      font-size: 1.15rem;
+    }
+
+    .selection-note {
+      min-height: 52px;
+      margin: 16px 0 0;
+      padding: 12px 14px;
+      border-left: 5px solid var(--mustard);
+      border-radius: 7px;
+      color: var(--muted);
+      background: rgba(214,166,42,.08);
+      line-height: 1.45;
+    }
+
+    .selection-note strong { color: var(--ink); }
+
+    .role-card {
+      width: 100%;
+      max-width: 1360px;
+      min-width: 0;
+      margin: 0 auto;
+      min-height: min(760px, calc(100vh - 160px));
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, .86fr) minmax(0, 1.14fr);
+      background: var(--paper-2);
+      border: 2px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .role-scene {
+      position: relative;
+      min-width: 0;
+      min-height: 620px;
+      overflow: hidden;
+      background: #ece3cf;
+    }
+
+    .role-scene img {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      height: 100%;
+      min-height: 620px;
+      object-fit: cover;
+      object-position: 50% center;
+      display: block;
+    }
+
+    .role-speech {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      max-width: calc(100% - 48px);
+      min-height: 112px;
+      padding: 18px 28px;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--line);
+      border-radius: 22px;
+      background: rgba(255,253,247,.96);
+      box-shadow: 5px 6px 0 rgba(75,73,68,.12);
+      font-family: "PingFang TC", system-ui, sans-serif;
+      font-size: clamp(.95rem, 1.2vw, 1.1rem);
+      font-weight: 750;
+      line-height: 1.5;
+      text-align: center;
+      text-wrap: balance;
+      overflow-wrap: anywhere;
+    }
+
+    .role-speech.user {
+      top: 7%;
+      left: 30%;
+      right: 8%;
+      min-height: 0;
+      height: 23%;
+      max-width: none;
+      padding: 8px 12px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+    .role-speech.agent { bottom: 24px; border-color: var(--mustard-deep); }
+
+    .prompt-panel {
+      padding: 26px 30px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .prompt-panel h1 { font-size: clamp(1.75rem, 2.5vw, 2.75rem); }
+    .prompt-panel .lead { margin: 10px 0 16px; font-size: 1rem; }
+    .prompt-stack { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+    .prompt-box {
+      min-width: 0;
+      border: 1.5px solid rgba(75,73,68,.28);
+      border-radius: 16px;
+      background: #fffdf8;
+      overflow: hidden;
+    }
+
+    .prompt-head {
+      padding: 12px 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(75,73,68,.18);
+      background: rgba(214,166,42,.11);
+      font-size: .95rem;
+      font-weight: 900;
+    }
+
+    .copy-button {
+      flex: 0 0 auto;
+      padding: 7px 11px;
+      border: 1px solid var(--mustard-deep);
+      border-radius: 999px;
+      color: #fff;
+      background: var(--mustard-deep);
+      cursor: pointer;
+      font-size: .82rem;
+      font-weight: 850;
+    }
+
+    .copy-button:focus-visible { outline: 3px solid rgba(214,166,42,.35); outline-offset: 2px; }
+
+    .prompt-box pre {
+      height: 300px;
+      margin: 0;
+      padding: 14px;
+      overflow: auto;
+      color: var(--ink);
+      font: 650 .82rem/1.52 "PingFang TC", system-ui, sans-serif;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .prompt-boundary {
+      margin: 12px 0 0;
+      padding: 9px 12px;
+      border-left: 5px solid var(--sage-deep);
+      border-radius: 7px;
+      color: var(--muted);
+      background: rgba(111,131,108,.10);
+      font-size: .88rem;
+      line-height: 1.45;
+    }
+
+    .lesson-stage {
+      width: min(1360px, 100%);
+      min-height: min(680px, calc(100dvh - 180px));
+      margin: 0 auto;
+      padding: clamp(24px, 3vw, 46px);
+      border: 2px solid var(--line);
+      border-radius: 24px;
+      background: var(--paper-2);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .lesson-kicker { margin: 0 0 8px; color: var(--mustard-deep); font-weight: 900; letter-spacing: .08em; }
+    .lesson-title { margin: 0; color: #292824; font-size: clamp(2rem, 3.3vw, 3.5rem); line-height: 1.17; }
+    .lesson-subtitle { margin: 12px 0 0; color: var(--muted); font-size: clamp(1rem, 1.4vw, 1.3rem); line-height: 1.5; }
+    .pain-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; margin: 30px 0 24px; }
+    .pain-panel { min-width: 0; min-height: 250px; padding: 25px; border: 2px solid var(--line); border-radius: 18px; background: #fffaf0; box-shadow: 5px 6px 0 rgba(75,73,68,.10); }
+    .pain-number { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: var(--mustard-deep); font-weight: 900; }
+    .pain-panel h2 { margin: 20px 0 10px; font-size: clamp(1.2rem, 1.55vw, 1.65rem); }
+    .pain-panel p { margin: 0; font-size: clamp(.98rem, 1.12vw, 1.12rem); line-height: 1.55; }
+    .lesson-takeaway { margin: auto 0 0; padding: 15px 22px; border-left: 7px solid var(--sage-deep); border-radius: 10px; background: #eef4e9; font-size: clamp(1.1rem, 1.5vw, 1.45rem); font-weight: 900; line-height: 1.4; }
+    .method-stage { padding-top: 28px; padding-bottom: 24px; }
+    .method-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+    .method-heading .lesson-subtitle { max-width: 420px; margin: 0; text-align: right; }
+    .method-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px; margin: 25px 0 18px; }
+    .method-item { min-width: 0; display: grid; grid-template-columns: 40px 1fr; align-items: center; gap: 12px; padding: 13px 16px; border: 1.5px solid rgba(75,73,68,.25); border-radius: 14px; background: #fffdf8; }
+    .method-check { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 9px; color: #fff; background: #288a45; font-family: system-ui, sans-serif; font-size: 1.3rem; font-weight: 900; }
+    .method-item strong { display: block; font-size: clamp(1rem, 1.25vw, 1.25rem); }
+    .method-item small { display: block; margin-top: 3px; color: var(--muted); font-size: clamp(.83rem, .94vw, .95rem); line-height: 1.35; }
+    .method-footnote { margin: 0; padding-top: 10px; border-top: 1px solid rgba(75,73,68,.22); color: var(--muted); font-size: clamp(.83rem, .9vw, .95rem); line-height: 1.4; }
+    .coach-card { height: min(585px, calc(100dvh - 180px)); min-height: 0; grid-template-columns: .9fr 1.1fr; }
+    .coach-benefits, .coach-actions { min-width: 0; padding: 22px 27px; }
+    .coach-benefits { display: flex; flex-direction: column; background: linear-gradient(145deg, #fcf7eb, #f2f5eb); border-right: 1.5px solid rgba(75,73,68,.2); }
+    .coach-benefits h1 { font-size: clamp(1.65rem, 2.5vw, 2.55rem); line-height: 1.12; }
+    .coach-benefits .lead { margin: 8px 0 12px; font-size: .94rem; line-height: 1.4; }
+    .coach-benefit-list { display: grid; gap: 5px; margin: 2px 0 auto; padding: 0; list-style: none; }
+    .coach-benefit-list li { display: flex; align-items: center; gap: 11px; min-height: 38px; padding: 4px 10px; border: 1px solid rgba(75,73,68,.18); border-radius: 10px; background: rgba(255,253,247,.9); font-size: clamp(.93rem, 1.08vw, 1.06rem); font-weight: 800; line-height: 1.25; }
+    .coach-benefit-list .method-check { flex: 0 0 25px; width: 25px; height: 25px; font-size: 1rem; border-radius: 7px; }
+    .coach-benefits .method-footnote { margin-top: 10px; padding-top: 8px; font-size: .78rem; }
+    .coach-actions { display: flex; flex-direction: column; gap: 9px; }
+    .coach-actions h2 { margin: 0; font-size: clamp(1.45rem, 2vw, 2.05rem); line-height: 1.16; }
+    .coach-actions .lead { margin: 0; font-size: .91rem; line-height: 1.35; }
+    .coach-actions .prompt-box pre { height: 146px; font-size: .78rem; line-height: 1.42; }
+    .coach-actions .prompt-box.rescue pre { height: 103px; }
+    .coach-actions .prompt-head { padding: 8px 12px; font-size: .91rem; }
+    .coach-actions .copy-button { padding: 5px 10px; }
+    .coach-actions .prompt-boundary { margin: 0; padding: 6px 9px; font-size: .78rem; }
+    .coach-comic { position: relative; overflow: hidden; min-width: 0; border-right: 1.5px solid rgba(75,73,68,.2); background: #f6f0e2; }
+    .coach-comic > img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+    .coach-screen-list { position: absolute; left: 31%; top: 20%; width: 63%; height: 25%; display: grid; grid-auto-flow: column; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(4, 1fr); gap: 4px 8px; margin: 0; padding: 0; list-style: none; }
+    .coach-screen-list li { display: flex; align-items: center; gap: 5px; min-width: 0; padding: 2px 4px; border-bottom: 1px solid rgba(75,73,68,.16); color: #393a31; font-family: "PingFang TC", sans-serif; font-size: clamp(.65rem, .89vw, .8rem); font-weight: 850; line-height: 1.1; white-space: nowrap; }
+    .coach-screen-list li:nth-child(4n) { border-bottom: 0; }
+    .coach-screen-list .tick { flex: 0 0 15px; width: 15px; height: 15px; display: grid; place-items: center; border-radius: 4px; color: #fff; background: #25824a; font: 900 12px/1 sans-serif; }
+    .coach-comic-caption { position: absolute; left: 4%; right: 4%; bottom: 3%; display: grid; place-items: center; min-height: 68px; padding: 8px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: rgba(255,253,247,.97); box-shadow: none; color: var(--ink); text-align: center; font-size: clamp(1.1rem, 1.65vw, 1.5rem); font-weight: 900; line-height: 1.25; }
+    @media (max-width: 1100px) {
+      .coach-card { height: auto; min-height: 650px; }
+      .coach-screen-list { top: 16%; }
+      .coach-actions .prompt-box pre, .coach-actions .prompt-box.rescue pre { height: auto; overflow: visible; }
+    }
+    .reach-stage { width: min(1360px, 100%); height: min(610px, calc(100dvh - 150px)); margin: 0 auto; padding: 28px 34px; border: 2px solid var(--line); border-radius: 24px; background: var(--paper-2); box-shadow: var(--shadow); overflow: hidden; }
+    .reach-stage h1 { max-width: none; font-size: clamp(2rem, 3.25vw, 3.2rem); }
+    .reach-stage .lead { margin: 7px 0 16px; font-size: clamp(.95rem, 1.3vw, 1.15rem); }
+    .reach-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; height: 330px; }
+    .reach-panel { position: relative; min-width: 0; padding: 17px; border: 2px solid var(--line); border-radius: 18px; background: #f8f2e5; box-shadow: 5px 6px 0 rgba(75,73,68,.10); }
+    .reach-panel.after { background: #ecf2e8; }
+    .reach-panel h2 { margin: 0 0 10px; font-size: clamp(1.15rem, 1.7vw, 1.7rem); }
+    .reach-monitor { height: 235px; padding: 11px 14px; border: 9px solid #514f49; border-bottom-width: 17px; border-radius: 15px; background: #fffdfa; transform: rotate(-1deg); box-shadow: 0 11px 0 -6px #9a978d; }
+    .reach-panel.after .reach-monitor { transform: rotate(1deg); }
+    .reach-monitor .search { padding: 7px 12px; border: 1px solid #d3cabb; border-radius: 18px; font-size: .9rem; }
+    .reach-lines { display: grid; gap: 8px; margin-top: 11px; }
+    .reach-lines span { padding: 7px 10px; border-radius: 7px; background: #f0ece5; font-size: .88rem; }
+    .reach-panel.after .reach-lines span { background: #e5efdf; }
+    .reach-note { margin: 12px 0 0; padding: 11px 16px; border-left: 7px solid var(--mustard); border-radius: 8px; background: #fff9e8; font-size: 1.1rem; font-weight: 850; }
+    .reach-card { width: min(1360px, 100%); height: min(610px, calc(100dvh - 150px)); margin: 0 auto; display: grid; grid-template-columns: .94fr 1.06fr; overflow: hidden; border: 2px solid var(--line); border-radius: 24px; background: var(--paper-2); box-shadow: var(--shadow); }
+    .reach-card-story { padding: 22px; background: linear-gradient(135deg,#fbf3df,#edf1e6); border-right: 1px solid #c9c1af; }
+    .reach-card-story h2 { margin: 0 0 14px; font-size: clamp(1.35rem, 2vw, 1.9rem); }
+    .reach-card-story .reach-panel { min-height: 204px; margin-bottom: 12px; }
+    .reach-card-story .reach-monitor { height: 141px; border-width: 6px; border-bottom-width: 10px; }
+    .reach-card-story .reach-lines { gap: 4px; margin-top: 6px; }
+    .reach-card-story .reach-lines span { padding: 3px 8px; font-size: .78rem; }
+    .reach-card-story .reach-panel h3 { margin: 0 0 7px; font-size: 1.05rem; }
+    .reach-card-action { min-width: 0; padding: 22px 25px; display: flex; flex-direction: column; gap: 8px; }
+    .reach-card-action h1 { font-size: clamp(1.6rem, 2.35vw, 2.4rem); }
+    .reach-card-action .lead { margin: 0; font-size: .92rem; line-height: 1.4; }
+    .reach-card-action .prompt-box pre { height: 210px; font-size: .77rem; line-height: 1.38; }
+    .reach-card-action .prompt-head { padding: 7px 11px; }
+    .reach-card-action .prompt-boundary { margin: 0; padding: 7px 10px; font-size: .78rem; }
+    .reach-card-action a { color: #765515; font-size: .79rem; }
+    .reach-comic-slide { position: relative; display: grid; place-items: center; padding: 0; background: #f6f0e2; }
+    .reach-comic-slide > img { display: block; width: auto; max-width: 100%; height: 100%; object-fit: contain; }
+    .reach-comic-copy { position: absolute; inset: 0; max-width: 1084px; width: 100%; margin: 0 auto; pointer-events: none; }
+    .reach-comic-title { position: absolute; top: 2%; left: 5%; right: 5%; padding: 5px 13px; border-radius: 8px; background: rgba(255,253,247,.92); font-size: clamp(1.1rem, 2.5vw, 2rem); font-weight: 900; text-align: center; }
+    .reach-screen-copy { position: absolute; top: 23%; width: 30%; padding: 5px 8px; color: #3f3c36; font: 700 clamp(.72rem, 1.2vw, 1.05rem)/1.32 "PingFang TC",sans-serif; text-align: left; }
+    .reach-screen-copy.before { left: 10%; }
+    .reach-screen-copy.after { left: 59%; }
+    .reach-screen-copy strong { display: block; margin-bottom: 3px; font-size: 1.15em; }
+    .reach-screen-copy span { display: block; margin-top: 2px; padding: 2px 5px; border-radius: 5px; background: rgba(245,240,230,.92); }
+    .reach-screen-copy.after span { background: rgba(229,239,223,.94); }
+    .reach-comic-foot { position: absolute; left: 9%; right: 9%; bottom: 3%; padding: 7px 12px; border-left: 5px solid var(--mustard); border-radius: 6px; background: rgba(255,253,247,.94); font-size: clamp(.85rem, 1.4vw, 1.15rem); font-weight: 850; text-align: center; }
+    .reach-card-story.comic { position: relative; padding: 0; overflow: hidden; }
+    .reach-card-story.comic > img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+    .reach-card-story.comic h2 { position: absolute; top: 2%; left: 4%; right: 4%; z-index: 2; padding: 5px 10px; border-radius: 9px; background: rgba(255,253,247,.94); text-align: center; font-size: clamp(1.05rem, 1.5vw, 1.35rem); }
+    .reach-card-monitor-copy { position: absolute; top: 22%; left: 18%; right: 21%; display: grid; grid-template-columns: 1fr 1fr; gap: 4%; color: #3f3c36; font: 750 clamp(.6rem, .85vw, .78rem)/1.28 "PingFang TC",sans-serif; }
+    .reach-card-monitor-copy > div { padding: 5px; text-align: center; }
+    .reach-card-monitor-copy strong { display: block; margin-bottom: 5px; }
+    .reach-card-monitor-copy span { display: block; margin: 4px 0; padding: 3px; border-radius: 4px; background: rgba(246,240,226,.95); }
+    .reach-card-monitor-copy > div:last-child span { background: rgba(229,239,223,.95); }
+    .reach-card-caption { position: absolute; left: 5%; right: 5%; bottom: 3%; padding: 8px 10px; border-radius: 9px; background: rgba(255,253,247,.95); text-align: center; font-size: .86rem; font-weight: 850; }
+    .research-screen { width: min(1360px, calc(100vw - 56px)); }
+    .research-card { width: 100%; margin: 0 auto; display: grid; grid-template-columns: .86fr 1.14fr; gap: 18px; padding: 24px; border: 2px solid #233d1f; border-radius: 24px; background: #fff; box-shadow: var(--shadow); }
+    .research-setup { padding: 22px; border-radius: 18px; background: #f5f4f0; }
+    .research-setup h1 { margin: 0 0 9px; color: #233d1f; font-size: clamp(1.55rem, 2.4vw, 2.25rem); }
+    .research-setup p { margin: 0 0 14px; line-height: 1.5; }
+    .research-fields { display: grid; gap: 12px; }
+    .research-fields label { display: grid; gap: 5px; font-size: .88rem; font-weight: 800; }
+    .research-fields input, .research-fields select { width: 100%; min-height: 42px; padding: 8px 10px; border: 1.5px solid #9aa99b; border-radius: 9px; color: #3a3a3a; background: #fff; font: 600 .95rem "PingFang TC", sans-serif; }
+    .research-fields input:focus-visible, .research-fields select:focus-visible { outline: 3px solid #c7d3c8; }
+    .research-list { margin: 14px 0 0; padding-left: 21px; line-height: 1.55; font-size: .88rem; }
+    .research-list li + li { margin-top: 3px; }
+    .research-action { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+    .research-action .prompt-head { background: #c7d3c8; }
+    .research-action .copy-button { border-color: #233d1f; background: #233d1f; }
+    .research-action .copy-button:disabled { cursor: not-allowed; opacity: .45; }
+    .research-action .prompt-box pre { height: min(365px, calc(100dvh - 270px)); min-height: 210px; font-size: .8rem; }
+    .research-hint { margin: 0; color: #3a3a3a; font: 650 .82rem/1.45 "PingFang TC", sans-serif; }
+
+    .skills-comic-card, .skills-install-card { width: min(1360px, 100%); margin: 0 auto; border: 2px solid var(--line); border-radius: 24px; background: var(--paper-2); box-shadow: var(--shadow); overflow: hidden; }
+    .skills-comic-card { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(300px, .82fr); min-height: min(620px, calc(100dvh - 150px)); }
+    .skills-comic-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; padding: 20px; background: #f6f0e2; }
+    .skills-comic-grid figure { position: relative; margin: 0; min-width: 0; }
+    .skills-comic-grid img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+    .skills-comic-grid figcaption { position: absolute; top: 8px; left: 8px; width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: var(--green-deep); font-weight: 900; box-shadow: 0 1px 3px rgba(0,0,0,.22); }
+    .skills-comic-copy { padding: 32px 30px; display: flex; flex-direction: column; justify-content: center; }
+    .skills-comic-copy h1, .skills-install-copy h1 { color: var(--green-deep); font-size: clamp(1.75rem, 2.7vw, 2.75rem); }
+    .skills-comic-copy .lead { margin: 12px 0 18px; font-size: 1rem; }
+    .skills-group-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+    .skills-group-list li { padding: 11px 13px; border: 1.5px solid rgba(75,73,68,.23); border-radius: 12px; background: #fffdf8; line-height: 1.38; }
+    .skills-group-list strong { display: block; color: var(--green-deep); font-size: .98rem; }
+    .skills-group-list span { display: block; margin-top: 3px; color: var(--muted); font-size: .84rem; }
+    .skills-comic-foot { margin: 16px 0 0; padding: 10px 12px; border-left: 5px solid var(--mustard); border-radius: 7px; background: rgba(214,166,42,.10); color: var(--muted); font-size: .88rem; line-height: 1.45; }
+    .skills-install-card { display: grid; grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr); min-height: min(620px, calc(100dvh - 150px)); }
+    .skills-install-copy { min-width: 0; padding: 28px 30px; display: flex; flex-direction: column; }
+    .skills-install-copy .lead { margin: 10px 0 16px; font-size: .97rem; line-height: 1.45; }
+    .skill-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 10px; margin: 0; padding: 0; list-style: none; }
+    .skill-list li { min-width: 0; padding: 8px 10px; border: 1px solid rgba(75,73,68,.2); border-radius: 10px; background: #fffdf8; font-size: .86rem; line-height: 1.3; }
+    .skill-list b { display: block; color: var(--green-deep); font-size: .78rem; }
+    .skill-list span { display: block; margin-top: 2px; color: var(--muted); }
+    .skills-install-action { min-width: 0; padding: 28px 26px; display: flex; flex-direction: column; gap: 10px; background: linear-gradient(145deg, #fcf7eb, #edf1e6); border-left: 1px solid #c9c1af; }
+    .skills-install-action .prompt-box pre { height: min(315px, calc(100dvh - 300px)); min-height: 210px; font-size: .78rem; line-height: 1.42; }
+    .skills-install-action .prompt-head { background: #c7d3c8; }
+    .skills-install-action .copy-button { border-color: var(--green-deep); background: var(--green-deep); }
+    .skills-install-action .prompt-boundary { margin: 0; padding: 8px 10px; font-size: .8rem; }
+    @media (max-width: 1100px) {
+      .skills-comic-card, .skills-install-card { grid-template-columns: 1fr; min-height: 0; }
+      .skills-comic-copy, .skills-install-copy, .skills-install-action { padding: 22px; }
+      .skills-install-action { border-left: 0; border-top: 1px solid #c9c1af; }
+      .skills-install-action .prompt-box pre { height: auto; max-height: 360px; }
+    }
+
+    .art-recreate-slide { width: min(1360px, 100%); height: min(620px, calc(100dvh - 150px)); margin: 0 auto; position: relative; overflow: hidden; border: 2px solid var(--line); border-radius: 24px; background: #f6f0e2; box-shadow: var(--shadow); }
+    .art-recreate-slide > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .art-recreate-title { position: absolute; top: 2.5%; left: 4%; right: 4%; padding: 7px 14px; border-radius: 10px; background: rgba(255,253,247,.94); color: var(--green-deep); font-size: clamp(1.3rem, 2.7vw, 2.25rem); font-weight: 900; text-align: center; }
+    .art-recreate-label { position: absolute; padding: 6px 10px; border-radius: 8px; background: rgba(255,253,247,.92); color: #3f3c36; font-size: clamp(.78rem, 1.25vw, 1.05rem); font-weight: 850; line-height: 1.3; text-align: center; }
+    .art-recreate-label.one { left: 4%; top: 14%; width: 20%; }
+    .art-recreate-label.two { left: 29%; top: 14%; width: 20%; }
+    .art-recreate-label.three { left: 54%; top: 14%; width: 20%; }
+    .art-recreate-label.four { right: 4%; top: 14%; width: 20%; }
+    .art-recreate-foot { position: absolute; left: 27%; right: 27%; bottom: 3%; padding: 6px 12px; border-left: 5px solid var(--mustard); border-radius: 7px; background: rgba(255,253,247,.95); color: #3f3c36; font-size: clamp(.78rem, 1.25vw, 1.05rem); font-weight: 850; text-align: center; }
+    .art-card { width: min(1360px, 100%); min-height: min(620px, calc(100dvh - 150px)); margin: 0 auto; display: grid; grid-template-columns: minmax(0,.9fr) minmax(0,1.1fr); overflow: hidden; border: 2px solid var(--line); border-radius: 24px; background: var(--paper-2); box-shadow: var(--shadow); }
+    .art-card-copy { padding: 26px 28px; background: linear-gradient(145deg,#fbf3df,#edf1e6); }
+    .art-card-copy h1 { color: var(--green-deep); font-size: clamp(1.7rem, 2.6vw, 2.5rem); }
+    .art-card-copy .lead { margin: 10px 0 17px; font-size: .96rem; line-height: 1.5; }
+    .art-checklist { margin: 0; padding-left: 22px; font-size: .9rem; line-height: 1.55; }
+    .art-checklist li + li { margin-top: 6px; }
+    .art-checklist b { color: var(--green-deep); }
+    .art-card-form { min-width: 0; padding: 24px 26px; display: flex; flex-direction: column; gap: 8px; }
+    .art-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; }
+    .art-fields label { display: grid; gap: 4px; color: var(--green-deep); font-size: .78rem; font-weight: 850; }
+    .art-fields input, .art-fields select, .art-fields textarea { width: 100%; min-height: 36px; padding: 7px 9px; border: 1px solid #a9b6a9; border-radius: 8px; background: #fff; color: var(--ink); font: 600 .82rem/1.35 "PingFang TC",sans-serif; }
+    .art-fields textarea { min-height: 54px; resize: vertical; }
+    .art-fields .wide { grid-column: 1 / -1; }
+    .art-card-form .prompt-box pre { height: min(190px, calc(100dvh - 430px)); min-height: 145px; font-size: .73rem; line-height: 1.38; }
+    .art-card-form .prompt-head { background: #c7d3c8; }
+    .art-card-form .copy-button { border-color: var(--green-deep); background: var(--green-deep); }
+    .art-card-form .prompt-boundary { margin: 0; padding: 7px 9px; font-size: .76rem; line-height: 1.4; }
+    @media (max-width: 1100px) { .art-card { grid-template-columns: 1fr; min-height: 0; } .art-card-form { border-top: 1px solid #c9c1af; } .art-card-form .prompt-box pre { height: auto; max-height: 330px; } }
+    @media (max-width: 650px) { .art-fields { grid-template-columns: 1fr; } .art-fields .wide { grid-column: auto; } }
+
+    .template-breakdown-slide { width: min(1360px, 100%); aspect-ratio: 16 / 9; height: auto; margin: 0 auto; position: relative; overflow: hidden; border: 2px solid var(--line); border-radius: 24px; background: #f6f0e2; box-shadow: var(--shadow); }
+    .template-breakdown-slide > img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .template-breakdown-title { position: absolute; top: 2.2%; left: 5%; right: 5%; padding: 6px 12px; color: #24211d; font-size: clamp(1.25rem, 2.6vw, 2.25rem); font-weight: 900; text-align: center; }
+    .template-panel-label { position: absolute; top: 14.2%; width: 20%; box-sizing: border-box; padding: 4px 6px; color: #24211d; font-size: clamp(.72rem, 1.25vw, 1.03rem); font-weight: 900; text-align: center; }
+    .template-panel-label.a { left: 3%; } .template-panel-label.b { left: 28%; } .template-panel-label.c { left: 53%; } .template-panel-label.d { right: 3%; }
+    .template-speech { position: absolute; top: 21.5%; width: 20%; min-height: 13%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; padding: 8px 12px; color: #24211d; font-size: clamp(.66rem, 1.05vw, .9rem); font-weight: 800; line-height: 1.3; text-align: center; overflow-wrap: anywhere; }
+    .template-speech.a { left: 3%; } .template-speech.b { left: 28%; } .template-speech.c { left: 53%; } .template-speech.d { right: 3%; }
+    .template-breakdown-foot { position: absolute; left: 8%; right: 8%; bottom: 4.8%; padding: 6px 12px; color: #24211d; font-size: clamp(.82rem, 1.45vw, 1.18rem); font-weight: 900; text-align: center; }
+    .template-card { width: min(1360px, 100%); min-height: min(620px, calc(100dvh - 150px)); margin: 0 auto; display: grid; grid-template-columns: minmax(0,.92fr) minmax(0,1.08fr); overflow: hidden; border: 2px solid var(--line); border-radius: 24px; background: var(--paper-2); box-shadow: var(--shadow); }
+    .template-samples { min-width: 0; padding: 22px; background: linear-gradient(145deg,#fbf3df,#edf1e6); }
+    .template-samples h2 { margin: 0 0 10px; color: var(--green-deep); font-size: clamp(1.35rem, 2vw, 1.8rem); }
+    .template-sample-grid { display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 7px; align-items: start; }
+    .template-sample-grid figure { margin: 0; min-width: 0; }
+    .template-sample-grid img { display: block; width: 100%; height: 260px; object-fit: cover; object-position: center; border: 1px solid rgba(75,73,68,.25); border-radius: 9px; background: #fff; }
+    .template-sample-grid figcaption { margin-top: 4px; color: var(--muted); font-size: .72rem; text-align: center; }
+    .template-sample-note { margin: 12px 0 0; padding: 9px 11px; border-left: 5px solid var(--mustard); border-radius: 7px; background: rgba(214,166,42,.10); color: var(--muted); font-size: .82rem; line-height: 1.45; }
+    .template-card-action { min-width: 0; padding: 24px 26px; display: flex; flex-direction: column; gap: 9px; }
+    .template-card-action h1 { color: var(--green-deep); font-size: clamp(1.65rem, 2.55vw, 2.45rem); }
+    .template-card-action .lead { margin: 0; font-size: .92rem; line-height: 1.4; }
+    .template-prompt-stack { display: grid; gap: 8px; }
+    .template-prompt-stack .prompt-box pre { height: 132px; min-height: 110px; font-size: .74rem; line-height: 1.4; }
+    .template-prompt-stack .prompt-head { background: #c7d3c8; }
+    .template-prompt-stack .copy-button { border-color: var(--green-deep); background: var(--green-deep); }
+    .template-card-boundary { margin: 0; padding: 8px 10px; border-left: 4px solid var(--mustard); background: #fbf3df; color: var(--muted); font-size: .78rem; line-height: 1.4; }
+    .prompt-brief-steps { margin: 14px 0 0; padding-left: 22px; color: var(--green-deep); font-size: .95rem; line-height: 1.6; }
+    .prompt-brief-steps li + li { margin-top: 8px; }
+    .prompt-brief-steps span { display: block; color: var(--muted); font-size: .82rem; line-height: 1.4; }
+    .prompt-brief-card .template-prompt-stack .prompt-box pre { height: 112px; min-height: 96px; font-size: .72rem; line-height: 1.35; }
+    .prompt-example-formula { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 7px; margin-top: 2px; }
+    .prompt-formula-box { padding: 8px 10px; border: 2px solid #9eaa8e; border-radius: 10px; background: #f8f5e8; color: var(--muted); font-size: .72rem; line-height: 1.4; }
+    .prompt-formula-box strong { display: block; margin-bottom: 3px; color: var(--green-deep); font-size: .82rem; }
+    .prompt-formula-plus { display: grid; place-items: center; color: var(--mustard-deep); font-size: 1.2rem; font-weight: 900; }
+    @media (max-width: 650px) { .prompt-example-formula { grid-template-columns: 1fr; } .prompt-formula-plus { transform: rotate(90deg); } }
+    .prompt-brief-real-refs { position: absolute; left: 7.5%; top: 47%; width: 18%; height: 21%; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; padding: 5px; box-sizing: border-box; border: 2px solid rgba(75,73,68,.38); border-radius: 8px; background: rgba(255,253,247,.92); z-index: 2; }
+    .prompt-brief-real-refs img { display: block; width: 100%; height: 100%; min-width: 0; object-fit: contain; background: #fff; border: 1px solid rgba(75,73,68,.3); }
+    .prompt-brief-slide .template-panel-label { display: block; }
+    @media (max-width: 1100px) { .template-card { grid-template-columns: 1fr; min-height: 0; } .template-card-action { border-top: 1px solid #c9c1af; } .template-sample-grid img { height: 190px; } }
+    @media (max-width: 650px) { .template-sample-grid { grid-template-columns: repeat(5, minmax(70px,1fr)); overflow-x: auto; padding-bottom: 4px; } .template-sample-grid img { height: 150px; } .template-card-action, .template-samples { padding: 18px; } }
+
+    .controls {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: 12px 28px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    body.lecture-mode .controls {
+      position: fixed;
+      z-index: 30;
+      inset: auto 0 0;
+      width: 100%;
+      padding: 18px 22px;
+      pointer-events: none;
+      background: linear-gradient(to top, rgba(246,240,226,.82), rgba(246,240,226,0));
+    }
+
+    body.lecture-mode .control-button {
+      min-width: 0;
+      min-height: 44px;
+      padding: 9px 17px;
+      pointer-events: auto;
+      opacity: .38;
+      backdrop-filter: blur(8px);
+    }
+
+    body.lecture-mode .controls:hover .control-button,
+    body.lecture-mode .control-button:focus-visible { opacity: 1; }
+
+    body.lecture-mode .screen-label { display: none; }
+
+    .menu-hotzone {
+      position: fixed;
+      z-index: 60;
+      inset: 0 auto 0 0;
+      width: 24px;
+    }
+
+    .menu-tab {
+      position: fixed;
+      z-index: 62;
+      left: 10px;
+      top: 50%;
+      width: 38px;
+      height: 62px;
+      padding: 0;
+      transform: translateY(-50%);
+      border: 1px solid rgba(75,73,68,.26);
+      border-radius: 0 16px 16px 0;
+      color: var(--ink);
+      background: rgba(255,253,247,.88);
+      box-shadow: 4px 8px 22px rgba(69,58,36,.12);
+      cursor: pointer;
+      opacity: .4;
+      transition: opacity .2s ease, left .25s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .menu-tab:hover,
+    .menu-tab:focus-visible,
+    body.menu-open .menu-tab { opacity: 1; outline: none; }
+
+    body.menu-open .menu-tab { left: 304px; }
+
+    .course-menu {
+      position: fixed;
+      z-index: 61;
+      inset: 0 auto 0 0;
+      width: min(304px, 88vw);
+      padding: 28px 20px;
+      transform: translateX(-104%);
+      border-right: 1.5px solid rgba(75,73,68,.28);
+      background: rgba(255,253,247,.97);
+      box-shadow: 18px 0 50px rgba(69,58,36,.18);
+      transition: transform .25s ease;
+      backdrop-filter: blur(14px);
+      overflow-y: auto;
+    }
+
+    body.menu-open .course-menu { transform: translateX(0); }
+
+    .course-menu h2 {
+      margin: 0 0 6px;
+      font-size: 1.35rem;
+    }
+
+    .course-menu > p {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .menu-list { display: grid; gap: 8px; }
+
+    .menu-item {
+      width: 100%;
+      padding: 13px 14px;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid transparent;
+      border-radius: 13px;
+      color: var(--ink);
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .menu-item:hover,
+    .menu-item:focus-visible { background: rgba(214,166,42,.10); outline: none; }
+
+    .menu-item.active {
+      border-color: rgba(169,120,23,.35);
+      background: rgba(214,166,42,.16);
+      font-weight: 850;
+    }
+
+    .menu-number {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--mustard-deep);
+      font-size: .82rem;
+      font-weight: 900;
+    }
+
+    .menu-kind {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: .78rem;
+      font-weight: 650;
+    }
+
+    .control-button {
+      min-width: 140px;
+      min-height: 50px;
+      padding: 12px 22px;
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--paper-2);
+      cursor: pointer;
+      font-weight: 850;
+      transition: transform .18s ease, opacity .18s ease, background .18s ease;
+    }
+
+    .control-button:hover:not(:disabled),
+    .control-button:focus-visible:not(:disabled) {
+      transform: translateY(-2px);
+      outline: none;
+    }
+
+    .control-button.primary {
+      border-color: var(--mustard-deep);
+      color: #fff;
+      background: var(--mustard-deep);
+    }
+
+    .control-button:disabled {
+      cursor: not-allowed;
+      opacity: .38;
+    }
+
+    .screen-label {
+      color: var(--muted);
+      font-weight: 750;
+      text-align: center;
+    }
+
+    @media (max-width: 920px) {
+      .topbar { padding: 14px 16px 8px; }
+      .brand span:last-child { display: none; }
+      .progress-track { width: 30vw; }
+      main { padding: 4px 14px 14px; }
+      .thought-card { grid-template-columns: 1fr; }
+      .role-card { grid-template-columns: minmax(0, 1fr); }
+      .scene, .scene img { min-height: 330px; max-height: 390px; }
+      .role-scene, .role-scene img { min-height: 330px; max-height: 390px; }
+      .speech { top: 16px; right: 16px; width: 55%; padding: 13px 15px; }
+      .interaction { padding: 28px 22px 32px; }
+      .prompt-panel { padding: 28px 22px 32px; }
+      .controls { padding: 10px 16px 18px; }
+      .chapter-note { align-items: flex-start; flex-direction: column; gap: 5px; }
+      body.lecture-mode .chapter-note { max-width: calc(100vw - 250px); }
+      .pain-grid { gap: 10px; }
+      .pain-panel { min-height: 225px; padding: 17px; }
+      .method-heading { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .method-heading .lesson-subtitle { text-align: left; }
+      .coach-card { height: auto; min-height: 0; grid-template-columns: 1fr; }
+      .coach-benefits { border-right: 0; border-bottom: 1.5px solid rgba(75,73,68,.2); }
+      .reach-card { height: auto; grid-template-columns: 1fr; }
+      .reach-card-story { border-right: 0; }
+      .reach-stage { height: auto; }
+      .reach-card-story.comic { height: 590px; }
+      .research-card { grid-template-columns: 1fr; }
+      .research-action .prompt-box pre { height: 300px; }
+    }
+
+    @media (max-width: 560px) {
+      .lesson-stage { min-height: 0; padding: 22px 18px; }
+      .pain-grid, .method-list { grid-template-columns: 1fr; }
+      .pain-panel { min-height: 0; }
+      .choices { grid-template-columns: 1fr; }
+      .prompt-stack { grid-template-columns: 1fr; }
+      .scene, .scene img { min-height: 260px; max-height: 310px; }
+      .role-scene, .role-scene img { min-height: 280px; max-height: 330px; }
+      .role-speech { font-size: .82rem; padding: 10px 12px; }
+      .prompt-box pre { height: 240px; }
+      .reach-compare { height: auto; grid-template-columns: 1fr; }
+      .reach-panel { min-height: 0; }
+      .reach-comic-slide { min-height: 0; }
+      .reach-card-monitor-copy { font-size: .7rem; }
+      .research-card { padding: 12px; gap: 10px; }
+      .research-setup { padding: 16px; }
+      .speech { width: 62%; font-size: .95rem; border-radius: 20px; }
+      .control-button { min-width: 112px; padding: 10px 16px; }
+      .screen-label { font-size: .88rem; }
+      body.lecture-mode .brand span:last-child { display: none; }
+      body.lecture-mode .progress-track { display: none; }
+      body.lecture-mode .chapter-note { display: none; }
+      body.menu-open .menu-tab { left: min(calc(88vw - 1px), 303px); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="menu-hotzone" id="menuHotzone" aria-hidden="true"></div>
+  <button class="menu-tab" id="menuTab" type="button" aria-label="開啟課程目錄" aria-expanded="false" aria-controls="courseMenu">☰</button>
+  <aside class="course-menu" id="courseMenu" aria-label="課程目錄">
+    <h2>課程目錄</h2>
+    <p>簡報與互動卡放在同一條學習路徑</p>
+    <nav class="menu-list">
+      <button class="menu-item active" type="button" data-go="0"><span class="menu-number">01</span><span>我的 AI Agent 旅程<span class="menu-kind">簡報</span></span></button>
+      <button class="menu-item" type="button" data-go="1"><span class="menu-number">✦</span><span>遇見你的 AI 新同事<span class="menu-kind">思考互動卡</span></span></button>
+      <button class="menu-item" type="button" data-go="2"><span class="menu-number">02</span><span>接力的誕生<span class="menu-kind">簡報</span></span></button>
+      <button class="menu-item" type="button" data-go="3"><span class="menu-number">03</span><span>一件工作，多個角色<span class="menu-kind">簡報</span></span></button>
+      <button class="menu-item" type="button" data-go="4"><span class="menu-number">✦</span><span>請 Agent 提案角色分工<span class="menu-kind">實用互動卡</span></span></button>
+      <button class="menu-item" type="button" data-go="5"><span class="menu-number">04</span><span>寫下陪跑教練之前<span class="menu-kind">簡報</span></span></button>
+      <button class="menu-item" type="button" data-go="6"><span class="menu-number">✦</span><span>請 vv 陪跑教練進場<span class="menu-kind">第 3 張互動卡</span></span></button>
+      <button class="menu-item" type="button" data-go="7"><span class="menu-number">05</span><span>認識 Codex 畫面<span class="menu-kind">簡報</span></span></button>
+      <button class="menu-item" type="button" data-go="8"><span class="menu-number">06</span><span>打掃阿姨：工具與方法<span class="menu-kind">簡報</span></span></button>
+      <button class="menu-item" type="button" data-go="9"><span class="menu-number">07</span><span>市場調查的新方法<span class="menu-kind">簡報</span></span></button>
+      <button class="menu-item" type="button" data-go="10"><span class="menu-number">✦</span><span>安裝 Agent Reach<span class="menu-kind">實作互動卡</span></span></button>
+      <button class="menu-item" type="button" data-go="11"><span class="menu-number">✦</span><span>查你的療程市場聲音<span class="menu-kind">實測互動卡</span></span></button>
+      <button class="menu-item" type="button" data-go="12"><span class="menu-number">08</span><span>召喚 11 顆技能<span class="menu-kind">漫畫導覽</span></span></button>
+      <button class="menu-item" type="button" data-go="13"><span class="menu-number">✦</span><span>整套技能一次裝好<span class="menu-kind">安裝互動卡</span></span></button>
+      <button class="menu-item" type="button" data-go="14"><span class="menu-number">09</span><span>把舊素材交給 Agent 再製<span class="menu-kind">簡報</span></span></button>
+      <button class="menu-item" type="button" data-go="15"><span class="menu-number">✦</span><span>現在做一張自己的素材<span class="menu-kind">實作互動卡</span></span></button>
+      <button class="menu-item" type="button" data-go="16"><span class="menu-number">10</span><span>先拆共同結構，再重做素材<span class="menu-kind">簡報</span></span></button>
+      <button class="menu-item" type="button" data-go="17"><span class="menu-number">✦</span><span>請 Agent 看懂 5 張圖<span class="menu-kind">實作互動卡</span></span></button>
+      <button class="menu-item" type="button" data-go="18"><span class="menu-number">11</span><span>把拆出的規則變成提示詞<span class="menu-kind">簡報</span></span></button>
+      <button class="menu-item" type="button" data-go="19"><span class="menu-number">✦</span><span>請 Agent 先回讀規則<span class="menu-kind">實作互動卡</span></span></button>
+    </nav>
+  </aside>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">AI</span>
+        <span>美力行銷 AI 小白上機</span>
+      </div>
+      <div class="progress-wrap" aria-label="目前進度">
+        <span id="progressText">第 01／11 章</span>
+        <span class="progress-track" aria-hidden="true"><span class="progress-bar" id="progressBar"></span></span>
+      </div>
+    </header>
+
+    <main>
+      <section class="screen slide-screen active" data-screen="0" aria-labelledby="slide1Title">
+        <h1 id="slide1Title" style="position:absolute;left:-9999px">小白 Vivi 的 AI Agent 起點</h1>
+        <div class="slide-stage">
+          <img src="assets/slide-01.jpg" alt="小白 Vivi 的 AI Agent 起點四格漫畫">
+        </div>
+        <div class="chapter-note">
+          <span>第1章｜我的 AI Agent 旅程</span>
+          <span>講完故事後，邀請學員先想一件想交出去的工作</span>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="1" aria-labelledby="thoughtTitle">
+        <div class="thought-card">
+          <div class="scene">
+            <img src="assets/ai-new-colleague.jpg" alt="短髮行銷企劃第一次遇見新來的 AI Agent 同事">
+            <div class="speech">哈囉，我是你的新同事！<br>你最想先把哪一件重複工作交給我？</div>
+          </div>
+          <div class="interaction">
+            <p class="eyebrow">第1章｜思考互動卡</p>
+            <h1 id="thoughtTitle">先在心裡選一件工作</h1>
+            <p class="lead">現在不用寫Prompt，也不會傳給GPT。只要點一件你最常重複做、最想有人幫忙的工作。</p>
+            <div class="choices" role="radiogroup" aria-label="選擇一件重複工作">
+              <button class="choice" type="button" role="radio" aria-checked="false" data-value="填寫雲端報表"><span class="choice-icon">▦</span><span>填寫雲端報表</span></button>
+              <button class="choice" type="button" role="radio" aria-checked="false" data-value="數據分析與簡報"><span class="choice-icon">↗</span><span>數據分析與簡報</span></button>
+              <button class="choice" type="button" role="radio" aria-checked="false" data-value="整理設計需求"><span class="choice-icon">✎</span><span>整理設計需求</span></button>
+              <button class="choice" type="button" role="radio" aria-checked="false" data-value="市場調查報告"><span class="choice-icon">⌕</span><span>市場調查報告</span></button>
+              <button class="choice" type="button" role="radio" aria-checked="false" data-value="生成官網文章"><span class="choice-icon">▤</span><span>生成官網文章</span></button>
+              <button class="choice" type="button" role="radio" aria-checked="false" data-value="社群寫文與發文"><span class="choice-icon">✦</span><span>社群寫文與發文</span></button>
+            </div>
+            <p class="selection-note" id="selectionNote" aria-live="polite">選一件就好。下一章會拿同一件工作來理解「接力」。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen slide-screen" data-screen="2" aria-labelledby="slide2Title">
+        <h1 id="slide2Title" style="position:absolute;left:-9999px">行銷工作的接力</h1>
+        <div class="slide-stage">
+          <img src="assets/slide-02.jpg" alt="一個 Agent 從頭做到尾容易失焦，行銷工作應拆成五棒接力">
+        </div>
+        <div class="chapter-note">
+          <span>第2章｜接力的誕生</span>
+          <span id="carryForward">把剛才想到的工作，開始拆成一棒一棒</span>
+        </div>
+      </section>
+
+      <section class="screen slide-screen" data-screen="3" aria-labelledby="slide3Title">
+        <h1 id="slide3Title" style="position:absolute;left:-9999px">一件工作，其實需要多個專業角色</h1>
+        <div class="slide-stage">
+          <img src="assets/slide-03.jpg" alt="一位行銷企劃和市場調查、廣告分析、內容簡報、獨立檢查四個專業角色開會">
+        </div>
+        <div class="chapter-note">
+          <span>第3章｜從接力走向角色分工</span>
+          <span>同一個 Agent 也可以分階段戴不同帽子，重要的是職責與交付要清楚</span>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="4" aria-labelledby="roleCardTitle">
+        <div class="role-card">
+          <div class="role-scene">
+            <img src="assets/role-planning-conversation.jpg" alt="短髮行銷企劃向 AI Agent 詢問如何拆分專業角色">
+            <div class="role-speech user">我知道最後想完成什麼，但不知道中間需要哪些專業角色。</div>
+            <div class="role-speech agent">先把結果告訴我，我幫你提出角色分工與接力順序。</div>
+          </div>
+          <div class="prompt-panel">
+            <p class="eyebrow">第3章｜實用互動卡</p>
+            <h1 id="roleCardTitle">不知道怎麼拆，就先請 Agent 提案</h1>
+            <p class="lead">依照你現在知道的程度，複製其中一張。這一步只討論分工，不會直接開始執行。</p>
+            <div class="prompt-stack">
+              <article class="prompt-box">
+                <div class="prompt-head"><span>我已知道部分角色</span><button class="copy-button" type="button" data-copy="knownPrompt">複製指令</button></div>
+                <pre id="knownPrompt"></pre>
+              </article>
+              <article class="prompt-box">
+                <div class="prompt-head"><span>我只知道最後結果</span><button class="copy-button" type="button" data-copy="unknownPrompt">複製指令</button></div>
+                <pre id="unknownPrompt"></pre>
+              </article>
+            </div>
+            <p class="prompt-boundary">這張卡是在請 Agent 提出角色方案；不代表要開四個 Agent，也不會自動建立程式。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen slide-screen" data-screen="5" aria-labelledby="painTitle">
+        <h1 id="painTitle" style="position:absolute;left:-9999px">接力有了，為什麼我還要寫 vv 陪跑教練？</h1>
+        <div class="slide-stage">
+          <img src="assets/slide-04.jpg" alt="四格漫畫：換對話又要重講、專案失憶、工程語言難懂、AI 停在半路；Vivi 因此想要會記得、說白話、帶下一步的 AI 教練">
+        </div>
+        <div class="chapter-note">
+          <span>第4章｜寫下陪跑教練之前</span>
+          <span>四個親身踩坑，帶出下一張 vv 教練互動卡</span>
+        </div>
+      </section>
+
+      <section class="screen" data-screen="6" aria-labelledby="coachCardTitle">
+        <div class="thought-card coach-card">
+          <div class="coach-comic" aria-label="Vivi 背對鏡頭看電腦，螢幕裡的陪跑教練介紹工作方法">
+            <img src="assets/coach-screen-scene-v2.webp" alt="Vivi 坐在桌前看著正面電腦螢幕，AI 陪跑教練在螢幕旁陪伴">
+            <ul class="coach-screen-list" aria-label="vv 陪跑教練的八項工作方法">
+              <li><span class="tick">✓</span>6 題認識你</li>
+              <li><span class="tick">✓</span>開工讀交接</li>
+              <li><span class="tick">✓</span>工程話說白話</li>
+              <li><span class="tick">✓</span>老闆視角排序</li>
+              <li><span class="tick">✓</span>拆任務、接力</li>
+              <li><span class="tick">✓</span>重要動作先問</li>
+              <li><span class="tick">✓</span>做完先驗收</li>
+              <li><span class="tick">✓</span>記錄與下一步</li>
+            </ul>
+            <div class="coach-comic-caption" id="coachCardTitle">安裝後，讓陪跑教練<br>帶著你開上 AI 這台車</div>
+          </div>
+          <div class="coach-actions">
+            <h2>現在，把教練請進你的 Codex</h2>
+            <p class="lead">先複製正式安裝指令；如果安裝後沒有問第 1 題，再複製下面的救援指令。</p>
+            <article class="prompt-box">
+              <div class="prompt-head"><span>① 正式安裝指令</span><button class="copy-button" type="button" data-copy="installPrompt">複製安裝指令</button></div>
+              <pre id="installPrompt">請幫我從 https://github.com/vivi911/vv-conductor-public 安裝繁體中文版 vv AI 陪跑教練。先閱讀公開說明與 install.sh，告訴我會改動哪些資料夾；舊版請保留可回復備份，不要刪除我的記憶。接著依公開步驟安裝，檢查 SKILL.md、onboarding.md、memory-templates/ 與 references/ 是否齊全。
+
+安裝與檢查完成後，不要只回報「安裝完成」，也不要叫我另開對話。請在同一個對話讀已安裝的 onboarding.md，介紹 vv，直接問六題導入的第 1 題；一次只問一題，等我回答再繼續。不要等我打 hi、vv 或其他啟動詞。</pre>
+            </article>
+            <article class="prompt-box rescue">
+              <div class="prompt-head"><span>② 安裝後沒有問第 1 題？</span><button class="copy-button" type="button" data-copy="rescuePrompt">複製救援指令</button></div>
+              <pre id="rescuePrompt">請先確認 vv AI 陪跑教練已安裝，並讀取已安裝的 SKILL.md 和 onboarding.md。若檔案齊全，請留在同一個對話介紹 vv，直接問我 onboarding 的第 1 題；一次只問一題，等我回答再問下一題。不要重新安裝，也不要改動我原有的記憶。若找不到檔案，請明確告訴我缺少什麼，不要自行編造六題。</pre>
+            </article>
+            <p class="prompt-boundary">驗收：它真的問出第 1 題才算通過；如果回報缺檔，是安裝未完成，請講師協助。</p>
+          </div>
+        </div>
+      </section>
+      <section class="screen slide-screen" data-screen="7" aria-labelledby="slide5Title">
+        <h1 id="slide5Title" style="position:absolute;left:-9999px">認識 Codex 畫面</h1>
+        <div class="slide-stage"><img src="assets/slide-05.jpg" alt="Codex 畫面與漫畫導覽示意"></div>
+      </section>
+      <section class="screen slide-screen" data-screen="8" aria-labelledby="slide6Title">
+        <h1 id="slide6Title" style="position:absolute;left:-9999px">打掃阿姨：工具與方法</h1>
+        <div class="slide-stage"><img src="assets/slide-06.jpg" alt="Vivi 是主人，AI 打掃阿姨帶著規則、工具與檔案櫃到家工作的漫畫"></div>
+      </section>
+      <section class="screen" data-screen="9" aria-labelledby="reachSlideTitle">
+        <div class="reach-stage reach-comic-slide">
+          <img src="assets/agent-reach-slide-comic-v2.webp" alt="左邊 Vivi 背對鏡頭在鍵盤工作；右邊 Vivi 一邊打鍵盤一邊轉頭微笑，兩台螢幕都面向觀眾">
+          <div class="reach-comic-copy">
+            <h1 class="reach-comic-title" id="reachSlideTitle">找市場聲音，少開一堆分頁</h1>
+            <div class="reach-screen-copy before"><strong>以前｜自己找</strong><span>搜尋公開討論</span><span>逐篇閱讀</span><span>手動記來源</span></div>
+            <div class="reach-screen-copy after"><strong>現在｜請 AI 整理</strong><span>找公開資料</span><span>整理常見顧慮</span><span>附來源讓我核對</span></div>
+            <p class="reach-comic-foot">AI 整理線索，我來判斷市場。</p>
+          </div>
+        </div>
+      </section>
+      <section class="screen" data-screen="10" aria-labelledby="reachCardTitle">
+        <div class="reach-card">
+          <div class="reach-card-story comic">
+            <img src="assets/agent-reach-card-comic-v2.webp" alt="Vivi 背對鏡頭在鍵盤工作，螢幕朝向觀眾，AI 機器人陪她看工作方式的差別">
+            <h2>你和 AI 一起看市場聲音</h2>
+            <div class="reach-card-monitor-copy">
+              <div><strong>自己找</strong><span>開分頁</span><span>讀內容</span><span>記來源</span></div>
+              <div><strong>AI 協助</strong><span>找公開資料</span><span>整理顧慮</span><span>附來源</span></div>
+            </div>
+            <div class="reach-card-caption">螢幕裡的是工作方式對照，不是真實搜尋結果</div>
+          </div>
+          <div class="reach-card-action">
+            <p class="eyebrow">第 7 張後｜實作互動卡</p>
+            <h1 id="reachCardTitle">把 Agent Reach 交給你的 Codex</h1>
+            <p class="lead">先請 Codex 檢查能用哪些公開資料，再決定是否安裝。這一步不用登入社群帳號。</p>
+            <article class="prompt-box">
+              <div class="prompt-head"><span>安裝引導｜複製給 Codex</span><button class="copy-button" type="button" data-copy="reachInstallPrompt">複製指令</button></div>
+              <pre id="reachInstallPrompt">請依 Agent Reach 官方安裝文件協助我設定：https://raw.githubusercontent.com/Panniantong/agent-reach/main/docs/install.md
+
+先閱讀文件並檢查我目前的環境，告訴我：哪些公開資料平台現在可用、安裝核心功能會改動什麼。先執行不會修改系統的檢查；需要安裝軟體或改設定時，先用白話列出範圍，等我同意再做。不要直接登入 Facebook、Instagram、小紅書等帳號，也不要讀取私訊或索取密碼。
+
+完成後請執行 Agent Reach 的狀態檢查，列出可用與未設定的平台。先不要做市場調查，等我提供題目。</pre>
+            </article>
+            <p class="prompt-boundary">驗收：能看見「可用／未設定平台」；安裝不等於能讀所有社群。練習時請用自己的產品題目，要求附公開來源，不把發文者當成潛在客戶名單。</p>
+            <a href="https://github.com/Panniantong/Agent-Reach" target="_blank" rel="noopener noreferrer">查看 Agent Reach 官方說明 ↗</a>
+          </div>
+        </div>
+      </section>
+      <section class="screen research-screen" data-screen="11" aria-labelledby="researchTitle">
+        <div class="research-card">
+          <div class="research-setup">
+            <p class="eyebrow">第 7 張後｜Agent Reach 實測</p>
+            <h1 id="researchTitle">換成你的療程，查市場聲音</h1>
+            <p>每人選一個自己負責的項目。先查公開資料，帶回有來源的線索，再由人判斷。</p>
+            <div class="research-fields">
+              <label for="researchCategory">你負責哪一類？
+                <select id="researchCategory"><option value="微整">微整</option><option value="體雕">體雕</option></select>
+              </label>
+              <label for="researchTreatment">填入一個具體療程／項目
+                <input id="researchTreatment" type="text" maxlength="60" placeholder="輸入你負責的療程名稱" autocomplete="off" required>
+              </label>
+              <label for="researchRegion">要查哪個地區？
+                <input id="researchRegion" type="text" maxlength="40" value="台灣" autocomplete="off">
+              </label>
+            </div>
+            <ol class="research-list">
+              <li>使用者在抱怨、困擾或想改善什麼？</li>
+              <li>決定前在意價格、恢復期、風險或效果期待嗎？</li>
+              <li>哪些診所的官網目前公開列有同類項目？</li>
+            </ol>
+          </div>
+          <div class="research-action">
+            <article class="prompt-box">
+              <div class="prompt-head"><span>填好療程後，複製給 Codex</span><button class="copy-button" type="button" data-copy="researchPrompt" id="researchCopy" disabled>先填療程</button></div>
+              <pre id="researchPrompt" aria-live="polite">先在左邊填入你負責的療程，這裡會產生可複製的搜尋任務。</pre>
+            </article>
+            <p class="research-hint">完成時帶回：公開討論的痛點、決策顧慮、診所官網線索；每項附原始連結與日期，最後選一點請同事人工核對。查不到就寫查不到。</p>
+            <p class="research-hint">只查目前可用的公開來源。不登入帳號、不讀私訊、不收集發文者資料；診所名單不是排名，使用者說法也不能直接寫成療效宣稱或廣告文案。</p>
+          </div>
+        </div>
+      </section>
+      <section class="screen" data-screen="12" aria-labelledby="skillsComicTitle">
+        <div class="skills-comic-card">
+          <div class="skills-comic-grid" aria-label="學員技能卡第 02 張六格漫畫">
+            <figure><img src="assets/skill02/panel-1-text.webp?v=20260914c" alt="漫畫第 1 格：裝好了十一顆技能"><figcaption>1</figcaption></figure>
+            <figure><img src="assets/skill02/panel-2-text.webp?v=20260914c" alt="漫畫第 2 格：整理任務找痛點"><figcaption>2</figcaption></figure>
+            <figure><img src="assets/skill02/panel-3-text.webp?v=20260914c" alt="漫畫第 3 格：文案入稿短影音"><figcaption>3</figcaption></figure>
+            <figure><img src="assets/skill02/panel-4-text.webp?v=20260914c" alt="漫畫第 4 格：看數字測試成效簡報"><figcaption>4</figcaption></figure>
+            <figure><img src="assets/skill02/panel-5-text.webp?v=20260914c" alt="漫畫第 5 格：顧官網分類健檢"><figcaption>5</figcaption></figure>
+            <figure><img src="assets/skill02/panel-6-text.webp?v=20260914c" alt="漫畫第 6 格：照表點開就好"><figcaption>6</figcaption></figure>
+          </div>
+          <div class="skills-comic-copy">
+            <p class="eyebrow">第 8 張｜漫畫導覽</p>
+            <h1 id="skillsComicTitle">先看懂：11 顆技能各自接哪一棒</h1>
+            <p class="lead">這張沿用學員技能卡的原漫畫，先把「想事情、寫東西、看數字、顧官網」四類工作放進腦中。</p>
+            <ul class="skills-group-list">
+              <li><strong>想事情｜整理任務找痛點</strong><span>任務整理助手・一步一步帶我做・受眾痛點研究</span></li>
+              <li><strong>寫東西｜文案入稿短影音</strong><span>多渠道文案・入稿整理助手・短影音腳本</span></li>
+              <li><strong>看數字｜測試成效簡報</strong><span>廣告測試規劃・廣告成效摘要・美力商業簡報輸出</span></li>
+              <li><strong>顧官網｜分類健檢</strong><span>網站分類建議・官網內容健檢</span></li>
+            </ul>
+            <p class="skills-comic-foot">下一頁會列出完整 11 顆技能，並提供一個安裝按鈕；只裝到今天的「行銷練習」Project。</p>
+          </div>
+        </div>
+      </section>
+      <section class="screen" data-screen="13" aria-labelledby="skillsInstallTitle">
+        <div class="skills-install-card">
+          <div class="skills-install-copy">
+            <p class="eyebrow">第 8 張後｜安裝互動卡</p>
+            <h1 id="skillsInstallTitle">整套技能規則包，一次裝好</h1>
+            <p class="lead">這 11 顆是 Codex 讀得懂的工作規則與任務模板，不是 11 個外部程式或帳號連接器。把下面這一段貼給 Codex，裝到目前的「行銷練習」Project，再逐一讀回是否成功。</p>
+            <ul class="skill-list" aria-label="11 顆技能清單">
+              <li><b>01｜任務整理</b><span>任務整理助手</span></li>
+              <li><b>02｜陪跑教練</b><span>一步一步帶我做</span></li>
+              <li><b>03｜受眾研究</b><span>受眾痛點研究</span></li>
+              <li><b>04｜多渠道</b><span>多渠道文案</span></li>
+              <li><b>05｜入稿整理</b><span>入稿整理助手</span></li>
+              <li><b>06｜商業簡報</b><span>美力商業簡報輸出</span></li>
+              <li><b>07｜廣告測試</b><span>廣告測試規劃</span></li>
+              <li><b>08｜成效摘要</b><span>廣告成效摘要</span></li>
+              <li><b>09｜網站分類</b><span>網站分類建議</span></li>
+              <li><b>10｜官網健檢</b><span>官網內容健檢</span></li>
+              <li><b>11｜短影音</b><span>短影音腳本</span></li>
+            </ul>
+          </div>
+          <div class="skills-install-action">
+            <article class="prompt-box">
+              <div class="prompt-head"><span>安裝指令｜複製給 Codex</span><button class="copy-button" type="button" data-copy="skillsInstallPrompt">複製安裝指令</button></div>
+              <pre id="skillsInstallPrompt">請安裝《把行銷工作交給 Codex》學員啟動包：git clone https://github.com/bebetterone-co/meili-marketing-skills.git ，把 skills/ 底下 11 個技能資料夾複製進本 Project 的技能資料夾，只裝到目前的「行銷練習」Project。安裝完成後，逐一讀回 11 個能力是否成功，並用假素材做一個草稿檢查。不要登入、不要連正式帳號、不要發布或修改任何設定。</pre>
+            </article>
+            <p class="prompt-boundary">驗收：11 顆規則都讀得到，並完成一個假素材草稿檢查；真正的網站、廣告、社群連接與發布功能仍要另外設定，這張卡不會自動取得。</p>
+          </div>
+        </div>
+      </section>
+      <section class="screen" data-screen="14" aria-labelledby="artRecreateTitle">
+        <div class="art-recreate-slide">
+          <img src="assets/agent-artwork-recreate-comic.webp" alt="四格漫畫：行銷企劃拿出舊素材，上傳到桌面版 GPT 工作台，列出保留與修改規則，再人工核對新稿">
+          <div class="art-recreate-title" id="artRecreateTitle">把做過的素材，交給 Agent 再製</div>
+          <div class="art-recreate-label one">① 舊素材<br>簡易平面圖＋過往範本</div>
+          <div class="art-recreate-label two">② 工作台交代<br>上傳參考圖，說清楚要改什麼</div>
+          <div class="art-recreate-label three">③ 先列規則<br>哪些保留、哪些修改、哪些不能新增</div>
+          <div class="art-recreate-label four">④ 人工核對<br>數字、療程名稱、尺寸與文字</div>
+          <div class="art-recreate-foot">不是從零想一張圖，是讓 Agent 依既有範本做出下一版</div>
+        </div>
+      </section>
+      <section class="screen" data-screen="15" aria-labelledby="artCardTitle">
+        <div class="art-card">
+          <div class="art-card-copy">
+            <p class="eyebrow">第 9 張後｜實作互動卡</p>
+            <h1 id="artCardTitle">現在做一張自己的素材</h1>
+            <p class="lead">選一張你做過的圖，填好「保留、修改、禁止新增」，就能產生一段提示詞貼到桌面版 GPT 工作台。</p>
+            <ol class="art-checklist">
+              <li><b>先上傳：</b>原始平面素材或過往範本</li>
+              <li><b>再說清楚：</b>哪些不可以動、哪些要換</li>
+              <li><b>最後驗收：</b>數字、療程名稱、品牌元素與尺寸</li>
+            </ol>
+          </div>
+          <div class="art-card-form">
+            <div class="art-fields">
+              <label>素材用途<input id="artPurpose" type="text" placeholder="例如：眼周療程 IG 貼文" autocomplete="off"></label>
+              <label>輸出尺寸<select id="artSize"><option>IG 貼文 1:1</option><option>IG 限時動態 9:16</option><option>LINE 圖文 1:1</option><option>官網橫幅 16:9</option></select></label>
+              <label class="wide">要保留什麼<input id="artKeep" type="text" placeholder="例如：Logo、人物、品牌色、已確認價格" autocomplete="off"></label>
+              <label class="wide">要修改什麼<input id="artChange" type="text" placeholder="例如：主標、背景色、版型比例" autocomplete="off"></label>
+              <label class="wide">不能新增什麼<textarea id="artAvoid" placeholder="例如：療效保證、未確認價格、虛構案例"></textarea></label>
+            </div>
+            <article class="prompt-box">
+              <div class="prompt-head"><span>你的提示詞｜複製給桌面版 GPT</span><button class="copy-button" type="button" data-copy="artPrompt" id="artCopy" disabled>先填用途</button></div>
+              <pre id="artPrompt" aria-live="polite">先填入素材用途，這裡會產生可複製的提示詞。</pre>
+            </article>
+            <p class="prompt-boundary">先讓 GPT 回讀「保留／修改／禁止新增」再生成；生成後人工核對數字、療程名稱、尺寸與醫療文字，不直接發布。</p>
+          </div>
+        </div>
+      </section>
+      <section class="screen" data-screen="16" aria-labelledby="templateBreakdownTitle">
+        <div class="template-breakdown-slide">
+          <img src="assets/slide-10-template-breakdown.webp" alt="四格漫畫：Vivi 提供五張素材，Agent 拆出共同版型，再整理保留與修改規則">
+          <div class="template-breakdown-title" id="templateBreakdownTitle">先拆共同結構，再重做素材</div>
+          <div class="template-panel-label a">A｜先看 5 張素材</div>
+          <div class="template-panel-label b">B｜標出共用區塊</div>
+          <div class="template-panel-label c">C｜用白話說想改什麼</div>
+          <div class="template-panel-label d">D｜回讀保留與修改</div>
+          <div class="template-speech a">這五張圖，看起來不一樣，但是不是同一套版型？</div>
+          <div class="template-speech b">我先幫你找出固定位置，哪些可以換。</div>
+          <div class="template-speech c">機台放大一點，左邊改成女性大腿。</div>
+          <div class="template-speech d">先確認規則，再做下一張。</div>
+          <div class="template-breakdown-foot">看起來是 5 張圖，其實可以重複使用同一套結構。</div>
+        </div>
+        <div class="chapter-note"><span>第10張｜版型拆解</span><span>先讓 Agent 看懂共同結構，再說你想改什麼</span></div>
+      </section>
+      <section class="screen" data-screen="17" aria-labelledby="templateCardTitle">
+        <div class="template-card">
+          <div class="template-samples">
+            <p class="eyebrow">第10張後｜實作互動卡</p>
+            <h2>先把 5 張圖交給 Agent 看懂</h2>
+            <div class="template-sample-grid">
+              <figure><img src="assets/template-sample-01.jpg" alt="素材範例 1"><figcaption>素材 1</figcaption></figure>
+              <figure><img src="assets/template-sample-02.jpg" alt="素材範例 2"><figcaption>素材 2</figcaption></figure>
+              <figure><img src="assets/template-sample-03.jpg" alt="素材範例 3"><figcaption>素材 3</figcaption></figure>
+              <figure><img src="assets/template-sample-04.jpg" alt="素材範例 4"><figcaption>素材 4</figcaption></figure>
+              <figure><img src="assets/template-sample-05.jpg" alt="素材範例 5"><figcaption>素材 5</figcaption></figure>
+            </div>
+            <p class="template-sample-note">不用先學會「共同結構」這個詞。你只要把圖交給 Agent，讓它先幫你整理。</p>
+          </div>
+          <div class="template-card-action">
+            <p class="eyebrow">互動卡｜兩種說法</p>
+            <h1 id="templateCardTitle">不知道怎麼說，也可以請 Agent 問你</h1>
+            <p class="lead">先選一種最像你現在的狀態；兩段都只做分析，不會直接生圖。</p>
+            <div class="template-prompt-stack">
+              <article class="prompt-box">
+                <div class="prompt-head"><span>我自己說</span><button class="copy-button" type="button" data-copy="templateSimplePrompt">複製指令</button></div>
+                <pre id="templateSimplePrompt">請看這 5 張圖，幫我找出它們共用的版型。
+
+先不要做新圖，只要告訴我：哪些地方一樣、哪些地方可以換。</pre>
+              </article>
+              <article class="prompt-box">
+                <div class="prompt-head"><span>請你問我</span><button class="copy-button" type="button" data-copy="templateInterviewPrompt">複製指令</button></div>
+                <pre id="templateInterviewPrompt">我想用這 5 張圖做一張新的素材，但我不知道要怎麼描述。
+
+請你一次問我一個簡單問題，帶我說清楚哪些要保留、哪些想修改。最後幫我整理成一段可以拿去做圖的話。</pre>
+              </article>
+            </div>
+            <p class="template-card-boundary">這張卡先拆版型，不直接發布；Agent 回讀完後，再進下一張卡產生新版本提示詞。</p>
+          </div>
+        </div>
+      </section>
+      <section class="screen" data-screen="18" aria-labelledby="promptBriefTitle">
+        <div class="template-breakdown-slide prompt-brief-slide">
+          <img src="assets/slide-11-prompt-brief.webp" alt="四格漫畫：把素材需求整理成保留、修改、禁止新增，再交給 Agent 回讀">
+          <div class="template-breakdown-title" id="promptBriefTitle">把拆出的規則，變成可用提示詞</div>
+          <div class="template-panel-label a">A｜先說想做什麼</div>
+          <div class="template-panel-label b">B｜分開三種規則</div>
+          <div class="template-panel-label c">C｜指出要改的位置</div>
+          <div class="template-panel-label d">D｜先回讀再做圖</div>
+          <div class="template-speech a">我想做一張新的素材，但不知道怎麼說。</div>
+          <div class="template-speech b">先分成保留、修改、禁止新增。</div>
+          <div class="template-speech c">這張圖只改這個位置。</div>
+          <div class="template-speech d">先回讀規則，再開始做圖。</div>
+          <div class="template-breakdown-foot">先回讀規則，再開始做圖。</div>
+        </div>
+        <div class="chapter-note"><span>第11張｜提示詞整理</span><span>把「我想改一下」變成 Agent 做得到的規則</span></div>
+      </section>
+      <section class="screen" data-screen="19" aria-labelledby="promptBriefCardTitle">
+        <div class="template-card prompt-brief-card">
+          <div class="template-samples">
+            <p class="eyebrow">第11張後｜實作互動卡</p>
+            <h2 id="promptBriefCardTitle">先把 5 張實際素材交給 Agent</h2>
+            <div class="template-sample-grid" aria-label="Vivi 提供的五張實際素材">
+              <figure><img src="assets/template-sample-01.jpg" alt="美力素材 1"><figcaption>素材 1</figcaption></figure>
+              <figure><img src="assets/template-sample-02.jpg" alt="美力素材 2"><figcaption>素材 2</figcaption></figure>
+              <figure><img src="assets/template-sample-03.jpg" alt="美力素材 3"><figcaption>素材 3</figcaption></figure>
+              <figure><img src="assets/template-sample-04.jpg" alt="美力素材 4"><figcaption>素材 4</figcaption></figure>
+              <figure><img src="assets/template-sample-05.jpg" alt="美力素材 5"><figcaption>素材 5</figcaption></figure>
+            </div>
+            <p class="template-sample-note">先讓 Agent 看懂共同版型，再說你想保留、修改或禁止新增什麼。</p>
+          </div>
+          <div class="template-card-action">
+            <p class="eyebrow">互動卡｜兩種說法</p>
+            <h1>讓 Agent 先整理規則</h1>
+            <p class="lead">不知道怎麼描述時，可以自己說，也可以請 Agent 一次問一個問題。</p>
+            <div class="template-prompt-stack">
+              <article class="prompt-box">
+                <div class="prompt-head"><span>我自己說</span><button class="copy-button" type="button" data-copy="promptBriefSimplePrompt">複製指令</button></div>
+                <pre id="promptBriefSimplePrompt">請看這 5 張圖，先幫我整理：
+
+1. 保留什麼
+   例：保留標題位置、人物比例、品牌色
+
+2. 修改什麼
+   例：機台放大 20%，左側照片換成女性大腿
+
+3. 禁止新增什麼
+   例：不要自行新增價格、療效保證、品牌文字
+
+先回讀三種規則，不要直接做圖。</pre>
+              </article>
+              <article class="prompt-box">
+                <div class="prompt-head"><span>請你問我</span><button class="copy-button" type="button" data-copy="promptBriefInterviewPrompt">複製指令</button></div>
+                <pre id="promptBriefInterviewPrompt">我想改一下這張圖裡面的＿＿＿＿。
+
+但我不知道怎麼描述我的目標。
+我只是希望＿＿＿＿可以＿＿＿＿，例如：下巴往上提／往下修，但不知道應該怎麼形容。
+
+請你反過來告訴我，我應該下什麼指令。
+請一次問我一個簡單問題，幫我說清楚：
+1. 要改哪個部位
+2. 想往哪個方向改
+3. 哪些要保留
+4. 哪些禁止新增
+
+最後幫我整理成一段可以拿去做圖的提示詞，先不要直接做圖。</pre>
+              </article>
+            </div>
+            <div class="prompt-example-formula" aria-label="提示詞填寫示例">
+              <div class="prompt-formula-box"><strong>保留</strong>標題位置<br>人物比例<br>品牌色</div>
+              <div class="prompt-formula-plus">＋</div>
+              <div class="prompt-formula-box"><strong>修改</strong>機台放大 20%<br>左側換女性大腿</div>
+            </div>
+            <p class="template-card-boundary">驗收順序：先看回讀是否正確，再看草稿；最後人工核對文字、數字、品牌與尺寸。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="controls">
+      <button class="control-button" type="button" id="prevButton" disabled>上一個畫面</button>
+      <div class="screen-label" id="screenLabel">簡報｜我的 AI Agent 旅程</div>
+      <button class="control-button primary" type="button" id="nextButton">接著想一想</button>
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      const screens = [...document.querySelectorAll('.screen')];
+      const choices = [...document.querySelectorAll('.choice')];
+      const prevButton = document.getElementById('prevButton');
+      const nextButton = document.getElementById('nextButton');
+      const screenLabel = document.getElementById('screenLabel');
+      const progressText = document.getElementById('progressText');
+      const progressBar = document.getElementById('progressBar');
+      const selectionNote = document.getElementById('selectionNote');
+      const carryForward = document.getElementById('carryForward');
+      const knownPrompt = document.getElementById('knownPrompt');
+      const unknownPrompt = document.getElementById('unknownPrompt');
+      const menuHotzone = document.getElementById('menuHotzone');
+      const menuTab = document.getElementById('menuTab');
+      const courseMenu = document.getElementById('courseMenu');
+      const menuItems = [...document.querySelectorAll('.menu-item')];
+      const researchCategory = document.getElementById('researchCategory');
+      const researchTreatment = document.getElementById('researchTreatment');
+      const researchRegion = document.getElementById('researchRegion');
+      const researchPrompt = document.getElementById('researchPrompt');
+      const researchCopy = document.getElementById('researchCopy');
+      const artPurpose = document.getElementById('artPurpose');
+      const artSize = document.getElementById('artSize');
+      const artKeep = document.getElementById('artKeep');
+      const artChange = document.getElementById('artChange');
+      const artAvoid = document.getElementById('artAvoid');
+      const artPrompt = document.getElementById('artPrompt');
+      const artCopy = document.getElementById('artCopy');
+      const labels = [
+        '簡報｜我的 AI Agent 旅程',
+        '思考互動卡｜認識你的 AI 新同事',
+        '簡報｜接力的誕生',
+        '簡報｜一件工作需要多個角色',
+        '互動卡｜請 Agent 提案角色分工',
+        '簡報｜寫下陪跑教練之前',
+        '互動卡｜請 vv 陪跑教練進場',
+        '簡報｜認識 Codex 畫面',
+        '簡報｜打掃阿姨：工具與方法',
+        '簡報｜市場調查的新方法',
+        '互動卡｜安裝 Agent Reach',
+        '互動卡｜查你的療程市場聲音',
+        '漫畫導覽｜召喚 11 顆技能',
+        '安裝互動卡｜整套技能一次裝好',
+        '簡報｜把舊素材交給 Agent 再製',
+        '實作互動卡｜現在做一張自己的素材',
+        '簡報｜先拆共同結構，再重做素材',
+        '互動卡｜請 Agent 看懂 5 張圖',
+        '簡報｜把拆出的規則變成提示詞',
+        '互動卡｜請 Agent 先回讀規則'
+      ];
+      const nextLabels = ['接著想一想', '我心裡有答案了', '看一件工作有哪些角色', '帶走拆角色指令', '看寫下教練前的痛點', '請 vv 陪跑教練進場', '認識 Codex 畫面', '看打掃阿姨的故事', '看市場調查的新方法', '安裝 Agent Reach', '用你的療程實測', '看 11 顆技能漫畫', '整套技能一次裝好', '看素材再製示範', '現在做一張', '看共同結構怎麼拆', '第10張完成', '看提示詞怎麼整理', '第11張完成', '已到最後'];
+      const requestedScreen = Number((window.location.hash.match(/screen-(\d+)/) || [])[1]);
+      let current = Number.isInteger(requestedScreen) && requestedScreen >= 0 && requestedScreen < screens.length ? requestedScreen : 0;
+      let selected = localStorage.getItem('meili-first-task') || '';
+      let closeMenuTimer = null;
+
+      function setMenu(open) {
+        window.clearTimeout(closeMenuTimer);
+        document.body.classList.toggle('menu-open', open);
+        menuTab.setAttribute('aria-expanded', String(open));
+        menuTab.setAttribute('aria-label', open ? '收起課程目錄' : '開啟課程目錄');
+      }
+
+      function paintSelection() {
+        choices.forEach((choice) => {
+          const isSelected = choice.dataset.value === selected;
+          choice.classList.toggle('selected', isSelected);
+          choice.setAttribute('aria-checked', String(isSelected));
+        });
+        if (selected) {
+          selectionNote.innerHTML = `你選的是：<strong>${selected}</strong><br>先記住它，下一章會把這件工作拆成接力。`;
+          carryForward.textContent = `把「${selected}」開始拆成一棒一棒`;
+        }
+        updateRolePrompts();
+      }
+
+      function updateRolePrompts() {
+        const outcome = selected || '最後成果';
+        knownPrompt.textContent = `我想完成【${outcome}】。\n\n目前我知道可能需要：\n【填入你想到的角色】\n\n請幫我檢查是否還缺少其他專業角色，並依照工作順序整理：\n\n1. 角色名稱\n2. 負責的工作\n3. 需要的資料\n4. 要交付的成果\n5. 最後由誰檢查\n6. 怎樣才算完成\n\n請先提出分工方案，不要直接開始執行。`;
+        unknownPrompt.textContent = `我想完成【${outcome}】，但我不確定中間需要哪些專業角色。\n\n請先不要執行，幫我提出一份角色分工與接力方案。\n\n每個角色請列出：\n1. 負責什麼\n2. 需要什麼資料\n3. 要交付什麼\n4. 下一棒交給誰\n5. 最後由誰檢查\n6. 怎樣才算完成\n\n最後請告訴我：\n哪些角色可以由同一個Agent分階段扮演，哪些工作需要另外安排獨立檢查。`;
+      }
+
+      function updateResearchPrompt() {
+        const treatment = researchTreatment.value.trim();
+        const region = researchRegion.value.trim() || '台灣';
+        researchCopy.disabled = !treatment;
+        researchCopy.textContent = treatment ? '複製實測指令' : '先填療程';
+        if (!treatment) {
+          researchPrompt.textContent = '先在左邊填入你負責的療程，這裡會產生可複製的搜尋任務。';
+          return;
+        }
+        researchPrompt.textContent = `我負責${researchCategory.value}項目「${treatment}」，想了解${region}的公開市場聲音。請用 Agent Reach 目前實際可用的公開來源做一次練習；先列出可查與無法查的平台，不要假裝每個平台都已連接。\n\n先找這個項目的常見別名，但不要把不同療程混成同一種。優先查近 12 個月；資料不足可以往前擴大，並標明時間。請分開整理：\n1. 使用者公開談到的困擾、痛點與想改善的情境。\n2. 決定前在意什麼，例如價格、恢復期、風險、效果期待；區分術前疑問與術後經驗。\n3. 哪些診所的官方網站目前公開列有這個項目，附官網頁面；只列查得到的，不做排名。\n\n每類最多挑 3 條有代表性的線索，附原始連結、發布日期（查不到就寫查閱日期）與簡短摘要。把「使用者說法」「診所說法」「你的推論」分開，重複貼文不要重複計算。資料不足或來源無法讀取時直接說明，不補造結果。\n\n最後交一張給行銷同事核對的表：線索／來源與日期／還要人工確認什麼，並提出 3 個值得追查的問題。不要登入帳號、讀私訊、收集發文者個資、聯絡任何人，也不要寫療效保證、診所優劣排名或可直接發布的醫療廣告文案。`; 
+      }
+
+      function updateArtPrompt() {
+        const purpose = artPurpose.value.trim();
+        const size = artSize.value;
+        const keep = artKeep.value.trim() || '請填寫要保留的品牌元素、人物、版型或已確認資訊';
+        const change = artChange.value.trim() || '請填寫要修改的主標、背景色、版型或主題';
+        const avoid = artAvoid.value.trim() || '不要新增未確認的數字、療效保證、案例或活動資訊';
+        artCopy.disabled = !purpose;
+        artCopy.textContent = purpose ? '複製提示詞' : '先填用途';
+        if (!purpose) { artPrompt.textContent = '先填入素材用途，這裡會產生可複製的提示詞。'; return; }
+        artPrompt.textContent = `我上傳了一張既有行銷素材，請協助我以它為參考，製作「${purpose}」的新版本，輸出尺寸是「${size}」。
+
+【一定要保留】
+${keep}
+
+【這次要修改】
+${change}
+
+【禁止自行新增】
+${avoid}
+
+請先回讀你理解的「保留／修改／禁止新增」三件事，再開始製作。完成後請逐項核對：
+1. 文字與數字是否完全依照我提供的內容。
+2. 療程名稱與醫療相關文字是否沒有自行增加療效承諾。
+3. Logo、品牌色、人物與版型是否符合保留條件。
+4. 輸出尺寸是否為 ${size}。
+5. 請標示這是草稿，未發布。`;
+      }
+
+      [artPurpose, artSize, artKeep, artChange, artAvoid].forEach((field) => field.addEventListener('input', updateArtPrompt));
+      artSize.addEventListener('change', updateArtPrompt);
+
+      [researchCategory, researchTreatment, researchRegion].forEach((field) => field.addEventListener('input', updateResearchPrompt));
+
+      function render() {
+        screens.forEach((screen, index) => screen.classList.toggle('active', index === current));
+        document.body.classList.remove('lecture-mode');
+        menuItems.forEach((item) => item.classList.toggle('active', Number(item.dataset.go) === current));
+        prevButton.disabled = current === 0;
+        nextButton.disabled = current === screens.length - 1 || (current === 1 && !selected);
+        nextButton.textContent = nextLabels[current];
+        screenLabel.textContent = `畫面 ${String(current + 1).padStart(2, '0')}／${screens.length}｜${labels[current]}`;
+        const slideNumber = current < 2 ? 1 : current < 3 ? 2 : current < 5 ? 3 : current < 7 ? 4 : current < 8 ? 5 : current < 9 ? 6 : current < 12 ? 7 : current < 14 ? 8 : current < 16 ? 9 : current < 18 ? 10 : 11;
+        progressText.textContent = `第 ${String(slideNumber).padStart(2, '0')}／11 章`;
+        progressBar.style.width = `${(slideNumber / 11) * 100}%`;
+        window.history.replaceState(null, '', `#screen-${current}`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      choices.forEach((choice) => {
+        choice.addEventListener('click', () => {
+          selected = choice.dataset.value;
+          localStorage.setItem('meili-first-task', selected);
+          paintSelection();
+          render();
+        });
+      });
+
+      menuHotzone.addEventListener('mouseenter', () => setMenu(true));
+      menuTab.addEventListener('click', () => setMenu(!document.body.classList.contains('menu-open')));
+      courseMenu.addEventListener('mouseenter', () => window.clearTimeout(closeMenuTimer));
+      courseMenu.addEventListener('mouseleave', () => {
+        closeMenuTimer = window.setTimeout(() => setMenu(false), 360);
+      });
+
+      menuItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          current = Number(item.dataset.go);
+          setMenu(false);
+          render();
+        });
+      });
+
+      document.querySelectorAll('.copy-button').forEach((button) => {
+        button.addEventListener('click', async () => {
+          const source = document.getElementById(button.dataset.copy);
+          const original = button.textContent;
+          try {
+            await navigator.clipboard.writeText(source.textContent);
+            button.textContent = '已複製';
+          } catch (error) {
+            const helper = document.createElement('textarea');
+            helper.value = source.textContent;
+            document.body.appendChild(helper);
+            helper.select();
+            const copied = document.execCommand('copy');
+            helper.remove();
+            button.textContent = copied ? '已複製' : '請手動選取';
+          }
+          window.setTimeout(() => { button.textContent = original; }, 1500);
+        });
+      });
+
+      prevButton.addEventListener('click', () => {
+        if (current > 0) current -= 1;
+        render();
+      });
+
+      nextButton.addEventListener('click', () => {
+        if (current < screens.length - 1) current += 1;
+        render();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.target.closest('input, textarea, select')) return;
+        if (event.key === 'Escape') setMenu(false);
+        if (event.key === 'ArrowLeft' && current > 0) {
+          current -= 1;
+          render();
+        }
+        if (event.key === 'ArrowRight' && current < screens.length - 1 && !(current === 1 && !selected)) {
+          current += 1;
+          render();
+        }
+      });
+
+      paintSelection();
+      updateResearchPrompt();
+      updateArtPrompt();
+      render();
+    })();
+  </script>
+</body>
+</html>
